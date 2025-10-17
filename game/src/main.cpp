@@ -292,11 +292,6 @@ int main()
             }
         }
 
-    
-   
-
-
-
     InitWindow(SCREEN_SIZE, SCREEN_SIZE, "Tower Defense");
     SetTargetFPS(60);
     while (!WindowShouldClose())
@@ -385,6 +380,7 @@ int main()
         DrawCircleV(enemyPosition, ENEMY_RADIUS, GOLD);
         
         DrawText(TextFormat("Bullets: %i", bullets.size()), 10, 10, 20, RED);
+        DrawText(TextFormat("Enemies Remaining: "), 10, 25, 20, RED);
         DrawText(TextFormat("%i", GetFPS()), 770, 10, 20, RED);
         EndDrawing();
     }

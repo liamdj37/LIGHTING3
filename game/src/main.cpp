@@ -164,6 +164,7 @@ struct Enemy
 {
     Vector2 position;
     int health = 20.0f;
+    int types = 4.0f;
     float speed;
 };
 
@@ -223,7 +224,7 @@ int main()
     {
         for (int col = 0; col < TILE_COUNT; col++)
         {
-            if (tiles[row][col] == TURRET)
+            if (KEY_LEFT_CONTROL == TURRET)
             {
                 Turret turret;
 
@@ -233,6 +234,9 @@ int main()
 
                 turret1.push_back(turret);
             }
+
+            //if (KEY_RIGHT_CONTROL)
+               // turret1.clear(turret);
 
             bool closed[TILE_COUNT][TILE_COUNT];
             closed[row][col] = tiles[row][col] == 0;

@@ -14,6 +14,8 @@ constexpr float TILE_SIZE = SCREEN_SIZE / TILE_COUNT;
 
 constexpr float ENEMY_RADIUS = 10.0f;
 constexpr float ENEMY_HEALTH = 20.0f;
+constexpr float TURRET_RADIUS = 10.0f;
+constexpr float TURRET_HEALTH = 10.0f;
 constexpr float BULLET_RADIUS = 10.0f;
 constexpr float BULLET_SPEED = 300.0f;
 constexpr float BULLET_LIFE_TIME = 1.0f;
@@ -154,13 +156,14 @@ struct Bullet
 struct Turret
 {
     Vector2 position;
+    int health = 10.0f;
     float range;
 };
 
 struct Enemy
 {
     Vector2 position;
-    int health;
+    int health = 20.0f;
     float speed;
 };
 
@@ -199,7 +202,7 @@ int main()
     int next = curr + 1;
 
     Vector2 enemyPosition = TileCenter(waypoints[curr].row, waypoints[curr].col);
-    float enemySpeed = 250.0f;   // <-- 250 pixels per second
+    float enemySpeed = 100.0f;   // <-- 250 pixels per second
     float minDistance = enemySpeed / 60.0f;
     minDistance *= 1.1f;
     bool atEnd = false;
@@ -211,7 +214,7 @@ int main()
 
     std::vector<Bullet> bullets;
     std::vector<Turret> turret1;
-    std::vector<Enemy> enemy1;
+    std::vector<Enemy> enemy1, enemy2;
 
 
     //Turret Spawning Code 
@@ -270,6 +273,7 @@ int main()
                             enemy.speed = enemySpeed;
 
                             enemy1.push_back(enemy);
+                            enemy2.push_back(enemy);
                         }
                     }
                 }
@@ -356,7 +360,7 @@ int main()
         for (const Turret& turret : turret1)
             DrawCircleV(turret.position, 10, PINK);
         
-        for (const Enemy& enemy : enemy1)
+        for (const Enemy& enemy : enemy1, enemy2)
             DrawCircleV(enemy.position, ENEMY_RADIUS, BLUE);
 
         

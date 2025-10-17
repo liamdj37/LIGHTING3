@@ -13,6 +13,7 @@ constexpr int TILE_COUNT = 20;
 constexpr float TILE_SIZE = SCREEN_SIZE / TILE_COUNT;
 
 constexpr float ENEMY_RADIUS = 10.0f;
+constexpr float ENEMY_HEALTH = 20.0f;
 constexpr float BULLET_RADIUS = 10.0f;
 constexpr float BULLET_SPEED = 300.0f;
 constexpr float BULLET_LIFE_TIME = 1.0f;
@@ -159,6 +160,7 @@ struct Turret
 struct Enemy
 {
     Vector2 position;
+    int health;
     float speed;
 };
 
@@ -192,21 +194,9 @@ int main()
             { 3, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }  // 19
     };
 
-
-
-   
-
-
-
-
-
-
     std::vector<Cell> waypoints = FloodFill({ 0, 12 }, tiles, WAYPOINT);
     int curr = 0;
     int next = curr + 1;
-
-
-
 
     Vector2 enemyPosition = TileCenter(waypoints[curr].row, waypoints[curr].col);
     float enemySpeed = 250.0f;   // <-- 250 pixels per second
@@ -217,7 +207,6 @@ int main()
     float shootTimeCurrent = 0.0f;
     float shootTimeTotal = 1.0f;
 
-   
     //Enemy and turret vectors
 
     std::vector<Bullet> bullets;
@@ -254,11 +243,9 @@ int main()
 
     float enemyspawnwaitingtime = 10.0f;
 
+    int enemyhealth = 20.0f;
 
 
-
-   
-    
     //Enemy spawning Code
 
         for (int row = 0; row < TILE_COUNT; row++)

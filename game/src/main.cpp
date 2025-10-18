@@ -134,7 +134,7 @@ struct BasicEnemy
     float speed;
     int currentwaypoint = 0;
     int nextwaypoint = 1;
-    int Health;
+    int Health = 20;
     
 };
 
@@ -461,12 +461,18 @@ int main()
                 bool atEnd;
 
 
-                if (basicEnemy.Health = 0)
+                if (basicEnemy.Health = 20)
                 {
 
+                    auto bulletsRemoveStart = std::remove_if(bullets.begin(), bullets.end(),
+                        [](Bullet& bullet)
+                        {
 
+                           // basicEnemy.Health - 5;
 
+                        });
 
+                    //return basicEnemy.destroy;
 
                 }
 

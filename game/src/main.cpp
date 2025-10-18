@@ -17,6 +17,21 @@ constexpr float BULLET_RADIUS = 10.0f;
 constexpr float BULLET_SPEED = 300.0f;
 constexpr float BULLET_LIFE_TIME = 3.0f;
 
+
+//TEXTURES/AUDIO
+
+
+
+
+
+
+
+
+
+
+
+
+
 enum TileType : int
 {
     GRASS,
@@ -212,9 +227,15 @@ int main()
     
     //Vector2 enemyPosition = TileCenter(waypoints[curr].row, waypoints[curr].col);
 
-    float enemySpeed = 250.0f;   // <-- 250 pixels per second
+    float enemySpeed = 150.0f;   // <-- 250 pixels per second
 
-    float fastenemySpeed = 150.0f;
+    float fastenemySpeed = 250.0f;
+
+    float evilenemySpeed = 125.0f;
+
+    float bigenemySpeed = 75.0f;
+
+    float tankenemySpeed = 25.0f;
 
     float minDistance = enemySpeed / 60.0f;
     minDistance *= 1.1f;
@@ -235,21 +256,23 @@ int main()
 
     float spawnTimeTotal1 = 1.0f;
 
-   
+   //ENEMY SPAWN TIMINGS
 
     float basicEnemySpawnTimeC = 0.0f;
     float basicEnemySpawnTimeT = 1.0f;
-    float basicEnemySpawnTimeL = 6.0f;
 
     float fastEnemySpawnTimeC = 0.0f;
-    float fastEnemySpawnTimeT = 8.0f;
-    float fastEnemySpawnTimeL = 10.0f;
-
-    float strongEnemySpawnTimeC = 0.0f;
-    float strongEnemySpawnTimeT = 10.0f;
-    float strongEnemySpawnTimeL = 16.0f;
-   
+    float fastEnemySpawnTimeT = 1.0f;
     
+
+    float evilEnemySpawnTimeC = 0.0f;
+    float evilEnemySpawnTimeT = 1.0f;
+
+    float bigEnemySpawnTimeC = 0.0f;
+    float bigEnemySpawnTimeT = 1.0f;
+
+    float tankEnemySpawnTimeC = 0.0f;
+    float tankEnemySpawnTimeT = 1.0f;
   
     //TURRET/BULLET VECTORS
     std::vector<Bullet> bullets;
@@ -260,8 +283,9 @@ int main()
     //ENEMY TYPE VECTORS
     std::vector<BasicEnemy> basicenemies;
     std::vector<FastEnemy> fastenemies;
-    std::vector<StrongEnemy> strongenemies;
-
+    std::vector<StrongEnemy> bigenemies;
+    std::vector<StrongEnemy> evilenemies;
+    std::vector<StrongEnemy> tankenemies;
 
     for (int row = 0; row < TILE_COUNT; row++)
     {
@@ -314,7 +338,7 @@ int main()
         float dt = GetFrameTime();
 
 
-      
+        
 
         //BASIC TURRET SPAWNING
 
@@ -435,6 +459,8 @@ int main()
 
             }
 
+            //FAST ENEMY SPAWNING
+
             fastEnemySpawnTimeC += dt;
             if (fastEnemySpawnTimeC > fastEnemySpawnTimeT)
             {
@@ -445,6 +471,49 @@ int main()
                 fastEnemy.speed = fastenemySpeed;
                 fastenemies.push_back(fastEnemy);
                 fastEnemy.Health = 1;
+            }
+
+            //STRONG ENEMY SPAWNING
+
+
+
+         
+
+            evilEnemySpawnTimeC += dt;
+            if (evilEnemySpawnTimeC > evilEnemySpawnTimeT)
+            {
+                evilEnemySpawnTimeC = 0.0f;
+
+                StrongEnemy evilEnemy;
+                evilEnemy.position = TileCenter(0, 12);
+                evilEnemy.speed = evilenemySpeed;
+                evilenemies.push_back(evilEnemy);
+
+            }
+
+
+            bigEnemySpawnTimeC += dt;
+            if (bigEnemySpawnTimeC > bigEnemySpawnTimeT)
+            {
+                bigEnemySpawnTimeC = 0.0f;
+
+                StrongEnemy  bigEnemy;
+                bigEnemy.position = TileCenter(0, 12);
+                bigEnemy.speed = bigenemySpeed;
+                bigenemies.push_back(bigEnemy);
+
+            }
+
+            tankEnemySpawnTimeC += dt;
+            if (tankEnemySpawnTimeC > tankEnemySpawnTimeT)
+            {
+                tankEnemySpawnTimeC = 0.0f;
+
+                StrongEnemy  tankEnemy;
+                tankEnemy.position = TileCenter(0, 12);
+                tankEnemy.speed = tankenemySpeed;
+                tankenemies.push_back(tankEnemy);
+
             }
 
 
@@ -485,7 +554,7 @@ int main()
                     Vector2 from = TileCenter(waypoints[curr].row, waypoints[curr].col);
                     Vector2 to = TileCenter(waypoints[next].row, waypoints[next].col);
                     Vector2 direction = Vector2Normalize(to - from);
-                    basicEnemy.position += direction * enemySpeed * dt;
+                    basicEnemy.position += direction * fastenemySpeed * dt * 1.5;
 
                     // Tolorance depends on enemy speed
                     if (CheckCollisionPointCircle(basicEnemy.position, to, minDistance))
@@ -527,15 +596,17 @@ int main()
                 int& curr = fastEnemy.currentwaypoint;
                 int& next = fastEnemy.nextwaypoint;
                 bool atEnd;
-
                 atEnd = curr == waypoints.size() - 1;
+
+
+                
 
                 if (!atEnd)
                 {
                     Vector2 from = TileCenter(waypoints[curr].row, waypoints[curr].col);
                     Vector2 to = TileCenter(waypoints[next].row, waypoints[next].col);
                     Vector2 direction = Vector2Normalize(to - from);
-                    fastEnemy.position += direction * enemySpeed * dt;
+                    fastEnemy.position += direction * fastenemySpeed * dt;
 
                     // Tolorance depends on enemy speed
                     if (CheckCollisionPointCircle(fastEnemy.position, to, minDistance))
@@ -557,11 +628,103 @@ int main()
 
                 }
 
+                //EVIL ENEMY MOVEMENT
+                for (StrongEnemy& evilEnemy : evilenemies)
+                {
+                    int& curr = evilEnemy.currentwaypoint;
+                    int& next = evilEnemy.nextwaypoint;
+                    bool atEnd;
+                    atEnd = curr == waypoints.size() - 1;
+
+                   
+
+                    if (!atEnd)
+                    {
+                        Vector2 from = TileCenter(waypoints[curr].row, waypoints[curr].col);
+                        Vector2 to = TileCenter(waypoints[next].row, waypoints[next].col);
+                        Vector2 direction = Vector2Normalize(to - from);
+                        evilEnemy.position += direction * evilenemySpeed * dt;
+
+                        // Tolorance depends on enemy speed
+                        if (CheckCollisionPointCircle(evilEnemy.position, to, minDistance))
+                        {
+
+                            evilEnemy.position = to;
+
+                            curr++;
+                            next++;
+                            //atEnd = curr == waypoints.size() - 1;
+                            //atEnd = curr == waypoints.size() - 1;
+                            bool End = false;
+                        }
+
+                    }
+                }
+                //TANK ENEMY MOVEMENT 
+                for (StrongEnemy& tankEnemy : tankenemies)
+                {
+                    int& curr = tankEnemy.currentwaypoint;
+                    int& next = tankEnemy.nextwaypoint;
+                    bool atEnd;
+
+                    atEnd = curr == waypoints.size() - 1;
+
+                    if (!atEnd)
+                    {
+                        Vector2 from = TileCenter(waypoints[curr].row, waypoints[curr].col);
+                        Vector2 to = TileCenter(waypoints[next].row, waypoints[next].col);
+                        Vector2 direction = Vector2Normalize(to - from);
+                        tankEnemy.position += direction * tankenemySpeed * dt;
+
+                        if (CheckCollisionPointCircle(tankEnemy.position, to, minDistance))
+                        {
+
+                            tankEnemy.position = to;
+
+                            curr++;
+                            next++;
+                            //atEnd = curr == waypoints.size() - 1;
+                            //atEnd = curr == waypoints.size() - 1;
+                            bool End = false;
+                        }
+                    }
+                }
 
 
 
+                        //BIG ENEMY MOVEMENT 
+                        for (StrongEnemy& bigEnemy : bigenemies)
+                        {
+                            int& curr = bigEnemy.currentwaypoint;
+                            int& next = bigEnemy.nextwaypoint;
+                            bool atEnd;
 
+                            atEnd = curr == waypoints.size() - 1;
 
+                            if (!atEnd)
+                            {
+                                Vector2 from = TileCenter(waypoints[curr].row, waypoints[curr].col);
+                                Vector2 to = TileCenter(waypoints[next].row, waypoints[next].col);
+                                Vector2 direction = Vector2Normalize(to - from);
+                                bigEnemy.position += direction * enemySpeed * dt;
+
+                                if (CheckCollisionPointCircle(bigEnemy.position, to, minDistance))
+                                {
+
+                                    bigEnemy.position = to;
+
+                                    curr++;
+                                    next++;
+                                    //atEnd = curr == waypoints.size() - 1;
+                                    //atEnd = curr == waypoints.size() - 1;
+                                    bool End = false;
+                                }
+                            }
+                        }
+
+                      
+
+              
 
 
 
@@ -587,23 +750,41 @@ int main()
 
         for (const BasicEnemy& basicEnemy : basicenemies)
         DrawCircleV(basicEnemy.position, ENEMY_RADIUS, BLUE);
-     
+
+
+
+        
+
+        
+
         for (const FastEnemy& fastEnemy : fastenemies)
-            DrawCircleV(fastEnemy.position, ENEMY_RADIUS, YELLOW);
+       DrawCircleV(fastEnemy.position, ENEMY_RADIUS, YELLOW);
+
+            
+        
+
+        for (const StrongEnemy& bigEnemy : bigenemies)
+                    DrawCircleV(bigEnemy.position, ENEMY_RADIUS, GREEN);
 
 
+        
+
+        for (const StrongEnemy& evilEnemy : evilenemies)
+      DrawCircleV(evilEnemy.position, ENEMY_RADIUS, PURPLE);
+
+
+        
+
+        for (const StrongEnemy& tankEnemy : tankenemies)
+        DrawCircleV(tankEnemy.position, ENEMY_RADIUS, BLACK);
+
+
+        
 
         for (const Bullet& bullet : bullets)
             DrawCircleV(bullet.position, BULLET_RADIUS, RED);
 
-   /*     if ()
-        {
-            
-            DrawText(TextFormat("YOU LOSE"), 10, 10, 20, RED);
-            
-
-        }*/
-
+ 
         DrawText(TextFormat("Bullets: %i", bullets.size()), 10, 10, 20, RED);
         DrawText(TextFormat("%i", GetFPS()), 770, 10, 20, RED);
         EndDrawing();
@@ -613,140 +794,3 @@ int main()
     return 0;
 }
 
-//std::vector<int> numbers{ 1, 1, 2, 2, 3, 3, 4, 4, 5, 5 };
-//for (int i = 0; i < numbers.size(); i++)
-//{
-//    if (numbers[i] % 2 == 1)
-//    {
-//        numbers.erase(numbers.begin() + i);
-//        i--;
-//    }
-//}
-
-// remove_if sorts the array so that all the elements we want to remove are at the end.
-// For example, if we start with    { 1, 1, 2, 2, 3, 3, 4, 4, 5, 5 },
-// We'll end up with                { 2, 2, 4, 4, 1, 1, 3, 3, 5, 5, }
-//auto start = std::remove_if(numbers.begin(), numbers.end(), [](int n) { return n % 2 == 1; });
-//numbers.erase(start, numbers.end());
-
-
-//JUNK CODE
-
-  // Start simple- try to spawn 10 enemies and move them along the path before adding turrets
-        // Note - You'll most likely need a 2d for-loop that tests all bullets against all enemies
-
-    /*     for (int row = 0; row < TILE_COUNT; row++)
-            {
-                for (int col = 0; col < TILE_COUNT; col++)
-                {
-                    if (tiles[row][col] == START)
-                    {
-                        for (int i = 1; i < 9; i++)
-                        {
-                            if (shootTimeCurrent >= shootTimeTotal)
-                            {
-                                Enemy enemy;
-                                enemy.position = TileCenter(row, col);
-                                enemy.speed = enemySpeed;
-                                enemy1.push_back(enemy);
-                            }
-                        }
-                    }
-                    bool closed[TILE_COUNT][TILE_COUNT];
-                    closed[row][col] = tiles[row][col] == 0;
-                }
-            }*/
-
-
-
-            //POSSIBLE ENEMY VARIANT CODE
-             /*   spawnTimeCurrent += dt;
-                if (spawnTimeCurrent >= spawnTimeTotal)
-                {
-                    spawnTimeCurrent = 0.0f;
-
-                    for (int i = 0; i < 3; i++)
-                    {
-                        Enemy enemy;
-                        enemy.position = TileCenter(0 + i, 12);
-                        enemy.speed = enemySpeed;
-                        enemies.push_back(enemy);
-                    }
-                }*/
-
-                //bullet.direction = Vector2Normalize(enemy.position - bullet.position);
-//bullets.push_back(bullet);
-
-//Bullet bulletT;
-//bulletT.position = TileCenter(TURRET, TURRET);
-//bulletT.direction = Vector2Normalize(enemyPosition - bulletT.position);
-//bullets.push_back(bulletT);
-
-//Vector2 Overlaptile = CheckCollisionCircles(GetMousePosition(), TILE_SIZE);
-        //}
-
-        // Turret Shooting
-        //if (IsKeyDown(KEY_SPACE) && shootTimeCurrent >= shootTimeTotal)
-        //{
-        //    shootTimeCurrent = 0.0f;
-        //    // AB = B - A
-        //    Bullet bulletT;
-        //    bulletT.position = 
-        //    bulletT.direction = Vector2Normalize(enemyPosition - bulletT.position);
-        //    bullets.push_back(bulletT);
-        //}
-
-        // 1) Update bullet logic (motion + destroy flag)
-
-  //Turret Spawning Code 
-//    for (int row = 0; row < TILE_COUNT; row++)
-//    {
-//        for (int col = 0; col < TILE_COUNT; col++)
-//        {
-//            if (tiles[row][col] == TURRET)
-//            {
-//                Turret turret;
-//                turret.position = TileCenter(row, col);
-//                turret.range = 1000.0f;
-//                turrets.push_back(turret);
-//            }
-//
-//            bool closed[TILE_COUNT][TILE_COUNT];
-//            closed[row][col] = tiles[row][col] == 0;
-//        }
-//    }
-//
-//    Vector2 TurretClickTile = GetMousePosition();
-//
-//    int TurretCount = 3;
-//
-//    if (TurretCount < 5 && IsKeyDown(KEY_SPACE))
-//    {
-//        Turret turret;
-//    turret.range = 1000.0f;
-//    turrets.push_back(turret);
-//}
-
-    //SPAWNS ENEMY
-    //for (int row = 0; row < TILE_COUNT; row++)
-    //{
-    //    for (int col = 0; col < TILE_COUNT; col++)
-    //    {
-    //        if (tiles[row][col] == START)
-    //        {
-    //            for (int i = 1; i < 9; i++)
-    //            {
-    //                if (shootTimeCurrent >= shootTimeTotal)
-    //                {
-    //                    Enemy enemy;
-    //                    enemy.position = TileCenter(row, col);
-    //                    enemy.speed = enemySpeed;
-    //                    enemy1.push_back(enemy);
-    //                }
-    //            }
-    //        }
-    //
-    //        bool closed[TILE_COUNT][TILE_COUNT];
-    //        closed[row][col] = tiles[row][col] == 0;
-    //    }
-    //}

@@ -333,7 +333,7 @@ int main()
 
         if (TurretMode)
         {
-            if (tiles[MouseY][MouseX] == GRASS && IsKeyPressed(KEY_SPACE) && basicturrets.size() < turretlimit)
+            if (tiles[MouseY][MouseX] == GRASS && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && basicturrets.size() < turretlimit)
             {
 
 
@@ -363,7 +363,7 @@ int main()
             //SHOOTING
 
             shootTimeCurrent += dt;
-            if (IsKeyDown(KEY_SPACE) && shootTimeCurrent >= shootTimeTotal)
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && shootTimeCurrent >= shootTimeTotal)
             {
                 shootTimeCurrent = 0.0f;
 
